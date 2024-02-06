@@ -22,7 +22,7 @@ export async function signUp(req: Request, res: Response) {
       await userModel.create({ name, email, password: hashedPassword, OTP });
 
       await sendmail(email, OTP);
-      res.status(200).send("Signed up successfully");
+      return res.status(200).send("Signed up successfully");
     }
     return res.status(422).send("invalid data");
   } catch (err) {
