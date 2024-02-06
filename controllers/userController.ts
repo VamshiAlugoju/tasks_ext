@@ -5,6 +5,7 @@ import bcrypt from "bcrypt";
 import sendmail from "../util/nodemailer";
 import validateModel from "../models/Validate";
 import { customRequest } from "../customTypes/Expresstypes";
+import { send } from "process";
 
 export const secretKey = "fkdflsjf;lsdkjf;sjfpsojf;sofjos";
 
@@ -17,22 +18,11 @@ export async function signUp(req: Request, res: Response) {
     }
     const hashedPassword = await bcrypt.hash(password, 10);
     if (name && email && password) {
-      await userModel.create({ name, email, password: hashedPassword });
       const OTP = generateOtp();
-      let validDoc = await validateModel.create({
-        email,
-        otp: OTP,
-        createdAt: new Date(),
-      });
+      await userModel.create({ name, email, password: hashedPassword, OTP });
 
-      return sendmail(email, OTP)
-        .then((data) => {
-          return res.status(200).send("Signed up successfully");
-        })
-        .catch((err) => {
-          validDoc.deleteOne();
-          return res.send("error in creating otp, try to generate otp again");
-        });
+      await sendmail(email, OTP);
+      res.status(200).send("Signed up successfully");
     }
     return res.status(422).send("invalid data");
   } catch (err) {
@@ -45,8 +35,12 @@ export async function signIn(req: Request, res: Response) {
     const { email, password } = req.body;
     const user = await userModel.findOne({ email });
     if (user) {
-      if (user.validated === false)
+      if (user.validated === false) {
+        const OTP = generateOtp();
+        await userModel.updateOne({ email: user.email }, { OTP });
+        await sendmail(user.email, OTP);
         return res.send("your email is not validated, please verify");
+      }
 
       const passwordMatched = await bcrypt.compare(password, user.password);
       if (passwordMatched) {
@@ -68,13 +62,12 @@ export async function signIn(req: Request, res: Response) {
 export async function validateOTP(req: customRequest, res: Response) {
   try {
     const { OTP, email } = req.body;
-    const validDoc = await validateModel.findOne({ email: email });
-    if (!validDoc) {
+    const userDoc = await userModel.findOne({ email });
+    if (!userDoc) {
       return res.send("email not found");
     }
-    if (OTP === validDoc?.otp) {
+    if (OTP === userDoc?.OTP) {
       await userModel.updateOne({ email }, { validated: true });
-      await validDoc?.updateOne({ is_used: true });
       return res.send("otp validated successfully");
     } else {
       return res.send("the otp you've entered is wrong");

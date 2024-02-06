@@ -6,6 +6,7 @@ export type userType = {
   password: string;
   phNumber?: string;
   validated?: boolean;
+  OTP?: string;
 };
 
 const userSchema = new Schema<userType>({
@@ -16,6 +17,10 @@ const userSchema = new Schema<userType>({
   validated: {
     type: String,
     default: false,
+  },
+  OTP: {
+    type: String,
+    default: "",
   },
 });
 

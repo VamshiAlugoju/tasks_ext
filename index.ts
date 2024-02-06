@@ -5,7 +5,6 @@ import cors from "cors";
 import authroutes from "./routes/authRoutes";
 import taskRoutes from "./routes/taskRoutes";
 import fileRoutes from "./routes/fileRoutes";
-import authorize from "./middlewares/authorize";
 
 const app = express();
 app.use(express.json());

@@ -10,9 +10,9 @@ export type uploadToCloudParams = {
 };
 
 cloudinary.config({
-  cloud_name: "dp1alaugi",
-  api_key: "889223717671168",
-  api_secret: "WFgKyKinEXasj4lJqUz7X0Y1sf4",
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
 async function uploadToCloudinary(
