@@ -5,6 +5,7 @@ import cors from "cors";
 import authroutes from "./routes/authRoutes";
 import taskRoutes from "./routes/taskRoutes";
 import fileRoutes from "./routes/fileRoutes";
+import wishlistRoutes from "./routes/wishlistRoutes";
 
 const app = express();
 app.use(express.json());
@@ -17,6 +18,8 @@ app.use(
 app.use("/auth", authroutes);
 app.use("/task", taskRoutes);
 app.use("/file", fileRoutes);
+app.use("/wishlist", wishlistRoutes);
+app.get("/test");
 
 connectDb()
   .then((data) => {
