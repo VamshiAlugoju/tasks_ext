@@ -6,14 +6,16 @@ type wishlistT = {
   description: string;
   movies: { _id: string }[];
   createdBy: string;
+  sequenceId: number;
 };
 
-const wishListSchema = new Schema<wishlistT>(
+export const wishListSchema = new Schema<wishlistT>(
   {
     name: String,
     description: String,
-    movies: [],
+    movies: [{ type: Schema.Types.ObjectId, ref: "movies" }],
     createdBy: Schema.ObjectId,
+    sequenceId: Number,
   },
   { versionKey: false, timestamps: true }
 );

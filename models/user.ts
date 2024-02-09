@@ -1,4 +1,5 @@
 import { Schema, model } from "mongoose";
+import { wishListSchema } from "./wishlist";
 
 export type userWishListT = {
   _id: string;
@@ -28,7 +29,7 @@ const userSchema = new Schema<userType>(
       type: String,
       default: "",
     },
-    wishList: [],
+    wishList: [{ type: Schema.Types.ObjectId, ref: "wishlist" }],
   },
   { timestamps: true, versionKey: false }
 );

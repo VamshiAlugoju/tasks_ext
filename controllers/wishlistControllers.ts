@@ -3,16 +3,16 @@ import { Response } from "express";
 import moviesModel from "../models/moveies";
 import wishListModel from "../models/wishlist";
 import userModel from "../models/user";
+import { incrementAndGetWishListCounter } from "../util/updateCounter";
 
 export async function addWishlist(req: customRequest, res: Response) {
   try {
     const user = req.user;
     const { name, description } = req.body;
     if (!name || !description) return res.send("invalid data");
-    const userWishlist = await userModel.findOne(
-      { _id: user?._id },
-      { wishList: true }
-    );
+    const userWishlist = await userModel
+      .findOne({ _id: user?._id }, { id: "$_id", wishList: true })
+      .populate("wishList");
 
     console.log(userWishlist);
     if (
@@ -30,15 +30,18 @@ export async function addWishlist(req: customRequest, res: Response) {
       }
     }
 
+    const sequnceCount = await incrementAndGetWishListCounter();
+
     const wishListDoc = await wishListModel.create({
       name,
       description,
       movies: [],
       createdBy: user?._id,
+      sequenceId: sequnceCount,
     });
     await userModel.updateOne(
       { _id: user?._id },
-      { $push: { wishList: { _id: wishListDoc._id, name: wishListDoc.name } } }
+      { $push: { wishList: wishListDoc._id } }
     );
     return res
       .status(200)

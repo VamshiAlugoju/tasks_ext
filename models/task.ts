@@ -5,10 +5,13 @@ export type taskT = {
   tDescription: string;
 };
 
-const taskSchema = new Schema<taskT>({
-  tName: { type: String, required: true },
-  tDescription: { type: String, required: true },
-});
+const taskSchema = new Schema<taskT>(
+  {
+    tName: { type: String, required: true },
+    tDescription: { type: String, required: true },
+  },
+  { versionKey: false, timestamps: false }
+);
 
 const taskModel = mongoose.model<taskT>("tasks", taskSchema);
 

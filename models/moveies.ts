@@ -11,15 +11,18 @@ export type moviesT = {
   rating: string;
 };
 
-const taskSchema = new Schema<moviesT>({
-  title: String,
-  year: String,
-  genre: String,
-  director: String,
-  country: String,
-  image: String,
-  rating: String,
-});
+const taskSchema = new Schema<moviesT>(
+  {
+    title: String,
+    year: String,
+    genre: String,
+    director: String,
+    country: String,
+    image: String,
+    rating: String,
+  },
+  { versionKey: false, timestamps: true }
+);
 
 const moviesModel = mongoose.model<moviesT>("movies", taskSchema);
 

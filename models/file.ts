@@ -9,14 +9,17 @@ export type fileType = {
   };
 };
 
-const fileSchema = new Schema<fileType>({
-  url: String,
-  name: String,
-  uploadedBy: {
-    _id: Schema.ObjectId,
+const fileSchema = new Schema<fileType>(
+  {
+    url: String,
     name: String,
+    uploadedBy: {
+      _id: Schema.ObjectId,
+      name: String,
+    },
   },
-});
+  { versionKey: false, timestamps: true }
+);
 
 const fileModel = model<fileType>("file", fileSchema);
 

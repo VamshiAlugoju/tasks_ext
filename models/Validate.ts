@@ -7,12 +7,15 @@ export type validateType = {
   createdAt: Date;
 };
 
-const validateSchema = new Schema<validateType>({
-  email: String,
-  otp: String,
-  is_used: { type: Boolean, default: false },
-  createdAt: Date,
-});
+const validateSchema = new Schema<validateType>(
+  {
+    email: String,
+    otp: String,
+    is_used: { type: Boolean, default: false },
+    createdAt: Date,
+  },
+  { versionKey: false, timestamps: false }
+);
 
 const validateModel = model<validateType>("valildate", validateSchema);
 
